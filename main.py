@@ -2,30 +2,35 @@ import pandas as pd
 
 # Function to calculate total yield
 def calculate_total_yield(df):
-    return df["Yield"].sum()
+    return df["Area"].sum()
 
 # Function to calculate average water and fertilizer usage per hectare
 def calculate_average_usage(df):
-    df["Water_Per_Hectare"] = df["Water_Usage"] / df["Hectares"]
-    df["Fertilizer_Per_Hectare"] = df["Fertilizer_Usage"] / df["Hectares"]
+    df["Water_Per_Hectare"] = df["Water_Usage"] / df["Area"]
+    df["Fertilizer_Per_Hectare"] = df["Fertilizer_Usage"] / df["Area"]
     avg_water = df["Water_Per_Hectare"].mean()
     avg_fertilizer = df["Fertilizer_Per_Hectare"].mean()
     return avg_water, avg_fertilizer
 
-# Function to find fields with the highest and lowest productivity scores
-def find_extreme_productivity(df):
-    highest = df.loc[df["Productivity_Score"].idxmax()]
-    lowest = df.loc[df["Productivity_Score"].idxmin()]
-    return highest, lowest
+def calculate_productivity_score(df):
+    df["Productivity_Score"] = (
+        df["Area"] / (df["Water_Usage"] + df["Fertilizer_Usage"]) * df["Soil_Quality"]
+    )
+    return df
 
+def find_extreme_productivity(df):
+    df = calculate_productivity_score(df)
+    highest_productivity = df.loc[df["Productivity_Score"].idxmax()]
+    lowest_productivity = df.loc[df["Productivity_Score"].idxmin()]
+    return highest_productivity, lowest_productivity
+    
 # Bonus: Function to simulate changes in water or fertilizer usage
 def simulate_changes(df, field_id, water_change=0, fertilizer_change=0):
-    df.loc[df["Field_ID"] == field_id, "Water_Usage"] += water_change
-    df.loc[df["Field_ID"] == field_id, "Fertilizer_Usage"] += fertilizer_change
-    # Recalculate productivity score (simplified example)
+    df.loc[df["Field_ID"] == field_id, "Water_Usage"] = water_change
+    df.loc[df["Field_ID"] == field_id, "Fertilizer_Usage"] = fertilizer_change
     df["Productivity_Score"] = (
-        df["Yield"] / (df["Water_Usage"] + df["Fertilizer_Usage"]) * 100
-    ).round(2)
+        df["Area"] / (df["Water_Usage"] + df["Fertilizer_Usage"]) * df["Soil_Quality"]
+    )
     return df
 
 # Main analysis
@@ -50,7 +55,7 @@ if __name__ == "__main__":
     
     # Simulate changes (Bonus)
     field_id_to_change = 3
-    updated_df = simulate_changes(df, field_id_to_change, water_change=50, fertilizer_change=5)
+    updated_df = simulate_changes(df, field_id_to_change, water_change=2000, fertilizer_change=50)
     print(f"Updated DataFrame:\n{updated_df}")
     
     # Save updated data back to a CSV file
