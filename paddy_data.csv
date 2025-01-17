@@ -1,0 +1,6 @@
+Field_ID,Yield,Water_Usage,Fertilizer_Usage,Hectares,Productivity_Score
+1,1200,300,50,2,85
+2,1500,350,60,3,92
+3,1300,320,55,2.5,88
+4,1800,400,65,4,95
+5,1700,380,62,3.5,90
