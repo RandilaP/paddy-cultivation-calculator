@@ -34,7 +34,11 @@ The purpose of this script is to:
 
 4. **Run the Script**:
    ```bash
-   python paddy_analysis_csv.py
+   python main.py
+   ```
+   or 
+   ```bash
+   python3 main.py
    ```
 
 5. **Check the Results**:
